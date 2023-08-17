@@ -1,8 +1,3 @@
-
-
-
-
-
 class Vehicle(db.Model):
     __tablename__ = 'Vehicles'
 
