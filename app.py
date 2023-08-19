@@ -6,7 +6,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SelectField, TextAreaField, SubmitField, DateField, DecimalField
 from wtforms.validators import DataRequired, Optional
 from makes import MAKES
-from models import Vehicle
+from models import Vehicle, Section, Employee, EmployeeVehicleAction, ExternalCompany, \
+    Preparation, ExternalService, Transaction
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qwerty'
@@ -47,7 +48,7 @@ class VehiclePurchaseForm(FlaskForm):
         ('AWD', 'All-Wheel Drive')
     ])
     Prod_Year = IntegerField('Production Year', validators=[DataRequired()])
-    Sales_Price = DecimalField('Price ($)', validators=[DataRequired()])
+    Sale_Price = DecimalField('Price ($)', validators=[DataRequired()])
     Transaction_Date = DateField('Transaction Date', format='%d-%m-%Y',
                                  validators=[DataRequired()], default=date.today())
     Price = DecimalField('Price ($)', validators=[DataRequired()])
@@ -74,13 +75,19 @@ def buyer_interface():
             Number_Of_Doors=form.Number_Of_Doors.data,
             Drive_Type=form.Drive_Type.data,
             Prod_Year=form.Prod_Year.data,
-            Sales_Price=form.Sales_Price.data,
+            Sale_Price=form.Sale_Price.data,
+        )
+
+        db.session.add(new_vehicle)
+        db.session.commit()
+
+        new_transaction = Transaction(
             Transaction_Date=form.Transaction_Date.data,
             Price=form.Price.data,
             Notes=form.Notes.data
         )
 
-        db.session.add(new_vehicle)
+        db.session.add(new_transaction)
         db.session.commit()
 
         flash('Vehicle and Purchase details saved successfully!', 'success')

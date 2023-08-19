@@ -1,3 +1,7 @@
+from flask_sqlalchemy import SQLAlchemy
+from app import app
+
+db = SQLAlchemy(app)
 class Vehicle(db.Model):
     __tablename__ = 'Vehicles'
 
@@ -15,25 +19,12 @@ class Vehicle(db.Model):
     Number_Of_Doors = db.Column(db.Integer)
     Drive_Type = db.Column(db.String(10))
     Prod_Year = db.Column(db.Integer)
+    Sale_Price = db.Column(db.Decimal(precision=10, scale=2))
 
-    def __init__(self, Vehicle_ID, VIN, Registration_Number, Make, Model, First_Registration_Date, Fuel_Type,
-                 Engine_Capacity, Engine_Power, Gearbox_Type, Mileage,
-                 Number_Of_Doors, Drive_Type, Prod_Year):
-        self.Vehicle_ID = Vehicle_ID
-        self.VIN = VIN
-        self.Registration_Number = Registration_Number
-        self.Make = Make
-        self.Model = Model
-        self.First_Registration_Date = First_Registration_Date
-        self.Fuel_Type = Fuel_Type
-        self.Engine_Capacity = Engine_Capacity
-        self.Engine_Power = Engine_Power
-        self.Gearbox_Type = Gearbox_Type
-        self.Mileage = Mileage
-        self.Number_Of_Doors = Number_Of_Doors
-        self.Drive_Type = Drive_Type
-        self.Prod_Year = Prod_Year
-
+    vehicle_actions = db.relationship('EmployeeVehicleAction', back_populates='vehicle')
+    preparations = db.relationship('Preparation', back_populates='vehicle')
+    external_services = db.relationship('ExternalService', back_populates='vehicle')
+    transactions = db.relationship('Transaction', back_populates='vehicle')
 
 class Section(db.Model):
     __tablename__ = 'Sections'
@@ -41,9 +32,7 @@ class Section(db.Model):
     Section_ID = db.Column(db.Integer, primary_key=True)
     Section_Name = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, Section_ID, Section_Name):
-        self.Section_ID = Section_ID
-        self.Section_Name = Section_Name
+    employees = db.relationship('Employee', back_populates='section')
 
 
 class Employee(db.Model):
@@ -54,13 +43,9 @@ class Employee(db.Model):
     Role = db.Column(db.String(20))
     Section_ID = db.Column(db.Integer, db.ForeignKey('Sections.Section_ID'))
 
-    section = db.relationship("Section", backref=db.backref("employee", lazy="dynamic"))
-
-    def __init__(self, Employee_ID, Full_Name, Surname, Role, Section_ID):
-        self.Employee_ID = Employee_ID
-        self.Full_Name = Full_Name
-        self.Role = Role
-        self.Section_ID = Section_ID
+    section = db.relationship('Section', back_populates='employees')
+    employee_actions = db.relationship('EmployeeVehicleAction', back_populates='employee')
+    transactions = db.relationship('Transaction', back_populates='employee')
 
 
 class EmployeeVehicleAction(db.Model):
@@ -72,15 +57,10 @@ class EmployeeVehicleAction(db.Model):
     Start_Date = db.Column(db.Date)
     End_Date = db.Column(db.Date)
 
-    employee = db.relationship("Employee", backref=db.backref("employee_vehicle_action", lazy="dynamic"))
-    vehicle = db.relationship("Vehicle", backref=db.backref("employee_vehicle_action", lazy="dynamic"))
+    vehicle = db.relationship('Vehicle', back_populates='vehicle_actions')
+    employee = db.relationship('Employees', back_populates='employee_actions')
 
-    def __init__(self, Employee_ID, Vehicle_ID, Action, Start_Date, End_Date):
-        self.Employee_ID = Employee_ID
-        self.Vehicle_ID = Vehicle_ID
-        self.Action = Action
-        self.Start_Date = Start_Date
-        self.End_Date = End_Date
+
 
 class ExternalCompany(db.Model):
     __tablename__ = "External_Companies"
@@ -88,7 +68,36 @@ class ExternalCompany(db.Model):
     Company_ID = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, Company_ID, Name):
-        self.Company_ID = Company_ID
-        self.Name = Name
+    external_services = db.relationship('ExternalService', back_populates='company')
 
+
+class Preparation(db.Model):
+    Preparation_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
+    Preparation_Costs = db.Column(db.Decimal(precision=10, scale=2))
+    Start_Date = db.Column(db.Date)
+    End_Date = db.Column(db.Date)
+
+    vehicle = db.relationship('Vehicle', back_populates='preparations')
+
+class ExternalService(db.Model):
+    Service_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
+    Company_ID = db.Column(db.Integer, db.ForeignKey('External_Companies.Company_ID'))
+    Service_Description = db.Column(db.String(255))
+    Service_Date = db.Column(db.DateTime)
+
+    vehicle = db.relationship('Vehicle', back_populates='external_services')
+    company = db.relationship('ExternalCompany', back_populates='external_services')
+
+class Transaction(db.Model):
+    Transaction_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
+    Employee_ID = db.Column(db.Integer, db.ForeignKey('Employees.Employee_ID'))
+    Transaction_Type = db.Column(db.Enum('Purchase', 'Sale'))
+    Transaction_Date = db.Column(db.Date)
+    Price = db.Column(db.Decimal(precision=10, scale=2))
+    Notes = db.Column(db.String(255))
+
+    vehicle = db.relationship('Vehicle', back_populates='transactions')
+    employee = db.relationship('Employee', back_populates='transactions')
