@@ -1,5 +1,6 @@
 from datetime import date
 
+import item as item
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -7,7 +8,8 @@ from wtforms import StringField, IntegerField, SelectField, TextAreaField, Submi
 from wtforms.validators import DataRequired, Optional
 from makes import MAKES
 from models import Vehicle, Section, Employee, EmployeeVehicleAction, ExternalCompany, \
-    Preparation, ExternalService, Transaction
+    Preparation, ExternalService, Transaction, CarMake, CarModel
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qwerty'
@@ -15,6 +17,7 @@ app.config['SECRET_KEY'] = 'qwerty'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://[root]:[password]@localhost/car_company'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 
 
 class VehiclePurchaseForm(FlaskForm):

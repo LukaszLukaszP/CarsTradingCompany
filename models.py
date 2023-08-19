@@ -101,3 +101,18 @@ class Transaction(db.Model):
 
     vehicle = db.relationship('Vehicle', back_populates='transactions')
     employee = db.relationship('Employee', back_populates='transactions')
+
+
+class CarMake(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+
+    models = db.relationship('CarModel', back_populates='make')
+
+
+class CarModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    make_id = db.Column(db.Integer, db.ForeignKey('car_make.id'), nullable=False)
+
+    make = db.relationship('CarMake', back_populates='models')
