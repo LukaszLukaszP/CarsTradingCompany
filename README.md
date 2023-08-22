@@ -6,10 +6,10 @@ This application is designed to manage a used car trading company. It offers fun
 
 **Features**
 
-**Vehicle Valuation Algorithm:** Determines purchasing and resale amounts of used cars.
-**Purchase Interface:** Allows users to enter basic information about acquired vehicles.
-**Management Interface:** Offers functionalities to manage purchased vehicles, including assigning them to specific sections and tasks.
-**Selling Interface:** Provides a detailed view of car information, work performed, purchase and selling price, and profit margin.
+-**Vehicle Valuation Algorithm:** Determines purchasing and resale amounts of used cars.
+-**Purchase Interface:** Allows users to enter basic information about acquired vehicles.
+-**Management Interface:** Offers functionalities to manage purchased vehicles, including assigning them to specific sections and tasks.
+-**Selling Interface:** Provides a detailed view of car information, work performed, purchase and selling price, and profit margin.
 
 **Technology Stack**
 
