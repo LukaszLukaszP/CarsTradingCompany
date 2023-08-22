@@ -1,4 +1,4 @@
-#Car Trading Company Management System
+Car Trading Company Management System
 **Introduction**
 This application is designed to manage a used car trading company. It offers functionalities to value used cars, manage purchased vehicles, and handle sales operations. Built using Flask and SQLAlchemy, the application provides a user-friendly interface for seamless operations.
 
