@@ -10,7 +10,6 @@ from makes import MAKES
 from models import Vehicle, Section, Employee, EmployeeVehicleAction, ExternalCompany, \
     Preparation, ExternalService, Transaction, CarMake, CarModel
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qwerty'
 
@@ -19,12 +18,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-
 class VehiclePurchaseForm(FlaskForm):
     VIN = StringField('VIN', validators=[DataRequired()])
     Registration_Number = StringField('Registration Number', validators=[DataRequired()])
-    Make = SelectField('Make', choices=MAKES, validators=[DataRequired()])
-    Model = StringField('Model', validators=[DataRequired()])
+    Make = SelectField('Make', choices=[(make.id, make.name) for make in CarMake.query.all()],
+                       validators=[DataRequired()])
+    Model = SelectField('Model', choices=[(model.id, model.name) for model in CarModel.query.all()],
+                        validators=[DataRequired()])
     First_Registration_Date = DateField('First Registration Date', format='%d-%m-%Y', validators=[DataRequired()])
     Fuel_Type = SelectField('Fuel Type', choices=[
         ('Gas', 'Gas'),
