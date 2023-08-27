@@ -1,30 +1,23 @@
 from datetime import date
-
-import item as item
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
+from database import db
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SelectField, TextAreaField, SubmitField, DateField, DecimalField
 from wtforms.validators import DataRequired, Optional
-from makes import MAKES
 from models import Vehicle, Section, Employee, EmployeeVehicleAction, ExternalCompany, \
     Preparation, ExternalService, Transaction, CarMake, CarModel
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qwerty'
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://[root]:[password]@localhost/car_company'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
 
 class VehiclePurchaseForm(FlaskForm):
     VIN = StringField('VIN', validators=[DataRequired()])
     Registration_Number = StringField('Registration Number', validators=[DataRequired()])
-    Make = SelectField('Make', choices=[(make.id, make.name) for make in CarMake.query.all()],
-                       validators=[DataRequired()])
-    Model = SelectField('Model', choices=[(model.id, model.name) for model in CarModel.query.all()],
-                        validators=[DataRequired()])
+    Make = SelectField('Make', choices=[], validators=[DataRequired()])
+    Model = SelectField('Model', choices=[], validators=[DataRequired()])
     First_Registration_Date = DateField('First Registration Date', format='%d-%m-%Y', validators=[DataRequired()])
     Fuel_Type = SelectField('Fuel Type', choices=[
         ('Gas', 'Gas'),
@@ -56,6 +49,11 @@ class VehiclePurchaseForm(FlaskForm):
                                  validators=[DataRequired()], default=date.today())
     Price = DecimalField('Price ($)', validators=[DataRequired()])
     Notes = StringField('Notes', validators=[Optional()])
+
+    def __init__(self, *args, **kwargs):
+        super(VehiclePurchaseForm, self).__init__(*args, **kwargs)
+        self.Make.choices = [(make.id, make.name) for make in CarMake.query.all()]
+        self.Model.choices = [(model.id, model.name) for model in CarModel.query.all()]
 
     Submit = SubmitField('Submit')
 
@@ -97,3 +95,7 @@ def buyer_interface():
         return redirect(url_for('buyer_interface'))
 
     return render_template('buyer_form.html', form=form)
+
+
+with app.app_context():
+    db.init_app(app)

@@ -1,7 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
-from app import app
+from sqlalchemy import DECIMAL
+from database import db
 
-db = SQLAlchemy(app)
+
 class Vehicle(db.Model):
     __tablename__ = 'Vehicles'
 
@@ -13,13 +13,13 @@ class Vehicle(db.Model):
     First_Registration_Date = db.Column(db.Date)
     Fuel_Type = db.Column(db.String(5))
     Engine_Capacity = db.Column(db.Integer)
-    Engine_Power = db.Column(db.Integer(4))
+    Engine_Power = db.Column(db.Integer)
     Gearbox_Type = db.Column(db.String(10))
     Mileage = db.Column(db.Integer)
     Number_Of_Doors = db.Column(db.Integer)
     Drive_Type = db.Column(db.String(10))
     Prod_Year = db.Column(db.Integer)
-    Sale_Price = db.Column(db.Decimal(precision=10, scale=2))
+    Sale_Price = db.Column(DECIMAL(precision=10, scale=2))
 
     vehicle_actions = db.relationship('EmployeeVehicleAction', back_populates='vehicle')
     preparations = db.relationship('Preparation', back_populates='vehicle')
@@ -74,7 +74,7 @@ class ExternalCompany(db.Model):
 class Preparation(db.Model):
     Preparation_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
-    Preparation_Costs = db.Column(db.Decimal(precision=10, scale=2))
+    Preparation_Costs = db.Column(DECIMAL(precision=10, scale=2))
     Start_Date = db.Column(db.Date)
     End_Date = db.Column(db.Date)
 
@@ -96,7 +96,7 @@ class Transaction(db.Model):
     Employee_ID = db.Column(db.Integer, db.ForeignKey('Employees.Employee_ID'))
     Transaction_Type = db.Column(db.Enum('Purchase', 'Sale'))
     Transaction_Date = db.Column(db.Date)
-    Price = db.Column(db.Decimal(precision=10, scale=2))
+    Price = db.Column(DECIMAL(precision=10, scale=2))
     Notes = db.Column(db.String(255))
 
     vehicle = db.relationship('Vehicle', back_populates='transactions')

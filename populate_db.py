@@ -1,7 +1,7 @@
-from app import db
+from app import app
 from models import CarMake, CarModel
 import requests
-
+from database import db
 
 def populate_database():
     # Getting makes and models from external database
@@ -28,27 +28,28 @@ def populate_database():
             print(f"An error occurred while fetching data: {e}")
             break  # Exit the loop if there's an error
 
-    for item in all_data:
+    with app.app_context():
+        for item in all_data:
+            try:
+                make_name = item["Make"]
+                make = CarMake.query.filter_by(name=make_name).first()
+
+                if not make:
+                    make = CarMake(name=make_name)
+                    db.session.add(make)
+
+                model_name = item["Model"]
+                car_model = CarModel(name=model_name, make_id=make.id)
+                db.session.add(car_model)
+            except Exception as e:
+                print(f"An error occurred while processing make/model {make_name}/{model_name}: {e}")
+                db.session.rollback()  # If there's an e
+
         try:
-            make_name = item["Make"]
-            make = CarMake.query.filter_by(name=make_name).first()
-
-            if not make:
-                make = CarMake(name=make_name)
-                db.session.add(make)
-
-            model_name = item["Model"]
-            car_model = CarModel(name=model_name, make_id=make.id)
-            db.session.add(car_model)
+            db.session.commit()
         except Exception as e:
-            print(f"An error occurred while processing make/model {make_name}/{model_name}: {e}")
-            db.session.rollback()  # If there's an e
-
-    try:
-        db.session.commit()
-    except Exception as e:
-        print(f"An error occurred while saving to the database: {e}")
-        db.session.rollback()
+            print(f"An error occurred while saving to the database: {e}")
+            db.session.rollback()
 
 
 if __name__ == "__main__":
