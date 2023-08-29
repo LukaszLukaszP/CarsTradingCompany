@@ -9,7 +9,7 @@ from models import Vehicle, Section, Employee, EmployeeVehicleAction, ExternalCo
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qwerty'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://[root]:[password]@localhost/car_company'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/car_company'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 

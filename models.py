@@ -26,6 +26,7 @@ class Vehicle(db.Model):
     external_services = db.relationship('ExternalService', back_populates='vehicle')
     transactions = db.relationship('Transaction', back_populates='vehicle')
 
+
 class Section(db.Model):
     __tablename__ = 'Sections'
 
@@ -58,8 +59,7 @@ class EmployeeVehicleAction(db.Model):
     End_Date = db.Column(db.Date)
 
     vehicle = db.relationship('Vehicle', back_populates='vehicle_actions')
-    employee = db.relationship('Employees', back_populates='employee_actions')
-
+    employee = db.relationship('Employee', back_populates='employee_actions')
 
 
 class ExternalCompany(db.Model):
@@ -72,6 +72,8 @@ class ExternalCompany(db.Model):
 
 
 class Preparation(db.Model):
+    __tablename__ = 'Preparation'
+
     Preparation_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
     Preparation_Costs = db.Column(DECIMAL(precision=10, scale=2))
@@ -80,7 +82,10 @@ class Preparation(db.Model):
 
     vehicle = db.relationship('Vehicle', back_populates='preparations')
 
+
 class ExternalService(db.Model):
+    __tablename__ = 'External_Services'
+
     Service_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
     Company_ID = db.Column(db.Integer, db.ForeignKey('External_Companies.Company_ID'))
@@ -90,7 +95,10 @@ class ExternalService(db.Model):
     vehicle = db.relationship('Vehicle', back_populates='external_services')
     company = db.relationship('ExternalCompany', back_populates='external_services')
 
+
 class Transaction(db.Model):
+    __tablename__ = 'Transactions'
+
     Transaction_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
     Employee_ID = db.Column(db.Integer, db.ForeignKey('Employees.Employee_ID'))
@@ -104,6 +112,8 @@ class Transaction(db.Model):
 
 
 class CarMake(db.Model):
+    __tablename__ = 'CarMake'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
@@ -111,8 +121,10 @@ class CarMake(db.Model):
 
 
 class CarModel(db.Model):
+    __tablename__ = 'CarModel'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    make_id = db.Column(db.Integer, db.ForeignKey('car_make.id'), nullable=False)
+    make_id = db.Column(db.Integer, db.ForeignKey('CarMake.id'), nullable=False)
 
     make = db.relationship('CarMake', back_populates='models')
