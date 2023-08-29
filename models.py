@@ -128,3 +128,4 @@ class CarModel(db.Model):
     make_id = db.Column(db.Integer, db.ForeignKey('CarMake.id'), nullable=False)
 
     make = db.relationship('CarMake', back_populates='models')
+
