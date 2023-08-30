@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Vehicle Purchase Form</h2>
+
+<form method="post">
+    {{ form.hidden_tag() }}
+
+    <label for="vin">VIN:</label>
+    {{ form.VIN() }}<br><br>
+
+    <label for="Registration_Number">Registration Number:</label>
+    {{ form.Registration_Number() }}<br><br>
+
+    <label for="Make">Make:</label>
+    {{ form.Make() }}<br><br>
+
+    <label for="Model">Model:</label>
+    {{ form.Model() }}<br><br>
+
+    <label for="First_Registration_Date">First Registration Date:</label>
+    {{ form.First_Registration_Date() }}<br><br>
+
+    <label for="Fuel_Type">Fuel Type:</label>
+    {{ form.Fuel_Type() }}<br><br>
+
+    <label for="Engine_Capacity">Engine Capacity:</label>
+    {{ form.Engine_Capacity() }}<br><br>
+
+    <label for="Engine_Power">Engine Power:</label>
+    {{ form.Engine_Power() }}<br><br>
+
+    <label for="Gearbox_Type">Gearbox Type:</label>
+    {{ form.Gearbox_Type() }}<br><br>
+
+    <label for="Mileage">Mileage:</label>
+    {{ form.Mileage() }}<br><br>
+
+    <label for="Number_Of_Doors">Number Of Doors:</label>
+    {{ form.Number_Of_Doors() }}<br><br>
+
+    <label for="Drive_Type">Drive Type:</label>
+    {{ form.Drive_Type() }}<br><br>
+
+    <label for="Prod_Year">Prod Year:</label>
+    {{ form.Prod_Year() }}<br><br>
+
+    <label for="Sale_Price">Sale Price:</label>
+    {{ form.Sale_Price() }}<br><br>
+
+    <label for="Transaction_Date">Transaction Date:</label>
+    {{ form.Transaction_Date() }}<br><br>
+
+    <label for="Price">Price:</label>
+    {{ form.Price() }}<br><br>
+
+    <label for="Notes">Notes:</label>
+    {{ form.Notes() }}<br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+{% for field in form %}
+    <label for="{{ field.id }}">{{ field.label.text }}</label>
+    {{ field() }}
+    {% for error in field.errors %}
+        <span style="color: red;">{{ error }}</span><br>
+    {% endfor %}
+    <br>
+{% endfor %}
+
+{% for message in get_flashed_messages() %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% endblock %}

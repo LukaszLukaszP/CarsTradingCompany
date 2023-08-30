@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 from database import db
 from flask_wtf import FlaskForm
@@ -12,13 +12,16 @@ app.config['SECRET_KEY'] = 'qwerty'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:password@localhost/car_company'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+with app.app_context():
+    db.init_app(app)
+
 
 class VehiclePurchaseForm(FlaskForm):
     VIN = StringField('VIN', validators=[DataRequired()])
     Registration_Number = StringField('Registration Number', validators=[DataRequired()])
     Make = SelectField('Make', choices=[], validators=[DataRequired()])
     Model = SelectField('Model', choices=[], validators=[DataRequired()])
-    First_Registration_Date = DateField('First Registration Date', format='%d-%m-%Y', validators=[DataRequired()])
+    First_Registration_Date = StringField('First Registration Date', validators=[DataRequired()])
     Fuel_Type = SelectField('Fuel Type', choices=[
         ('Gas', 'Gas'),
         ('Diesel', 'Diesel'),
@@ -45,8 +48,7 @@ class VehiclePurchaseForm(FlaskForm):
     ])
     Prod_Year = IntegerField('Production Year', validators=[DataRequired()])
     Sale_Price = DecimalField('Price ($)', validators=[DataRequired()])
-    Transaction_Date = DateField('Transaction Date', format='%d-%m-%Y',
-                                 validators=[DataRequired()], default=date.today())
+    Transaction_Date = StringField('Transaction Date', validators=[DataRequired()])
     Price = DecimalField('Price ($)', validators=[DataRequired()])
     Notes = StringField('Notes', validators=[Optional()])
 
@@ -61,13 +63,20 @@ class VehiclePurchaseForm(FlaskForm):
 @app.route('/buyer', methods=['GET', 'POST'])
 def buyer_interface():
     form = VehiclePurchaseForm()
+
+    form.Make.choices = [(make.id, make.name) for make in CarMake.query.all()]
+    form.Model.choices = [(model.id, model.name) for model in CarModel.query.all()]
+
     if form.validate_on_submit():
+        first_registration_date = datetime.strptime(form.First_Registration_Date.data, '%d.%m.%Y').date()
+        transaction_date = datetime.strptime(form.Transaction_Date.data, '%d.%m.%Y').date()
+
         new_vehicle = Vehicle(
             VIN=form.VIN.data,
             Registration_Number=form.Registration_Number.data,
             Make=form.Make.data,
             Model=form.Model.data,
-            First_Registration_Date=form.First_Registration_Date.data,
+            First_Registration_Date=first_registration_date,
             Fuel_Type=form.Fuel_Type.data,
             Engine_Capacity=form.Engine_Capacity.data,
             Engine_Power=form.Engine_Power.data,
@@ -83,7 +92,8 @@ def buyer_interface():
         db.session.commit()
 
         new_transaction = Transaction(
-            Transaction_Date=form.Transaction_Date.data,
+            Vehicle_ID=new_vehicle.Vehicle_ID,
+            Transaction_Date=transaction_date,
             Price=form.Price.data,
             Notes=form.Notes.data
         )
@@ -97,5 +107,5 @@ def buyer_interface():
     return render_template('buyer_form.html', form=form)
 
 
-with app.app_context():
-    db.init_app(app)
+if __name__ == '__main__':
+    app.run(debug=True)
