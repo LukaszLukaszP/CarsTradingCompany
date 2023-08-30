@@ -7,8 +7,8 @@ def populate_database():
     # Getting makes and models from external database
     url = 'https://parseapi.back4app.com/classes/Carmodels_Car_Model_List?order=Make,Model&keys=Make,Model'
     headers = {
-        'X-Parse-Application-Id': 'rn14Rlli0e5UxBexBLEAvkFyP01jDMs7GPvPBVNW',
-        'X-Parse-REST-API-Key': '04aDgpOiqjxqHLeDXrRgPylnzdFXmJRuf2dcM5nQ'
+        'X-Parse-Application-Id': 'xxxx',
+        'X-Parse-REST-API-Key': 'xxxxx'
     }
 
     all_data = []
