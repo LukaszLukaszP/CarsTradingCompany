@@ -1,0 +1,111 @@
+USE car_company;
+SHOW TABLES;
+
+CREATE TABLE Vehicles (
+    Vehicle_ID INT AUTO_INCREMENT PRIMARY KEY,
+    VIN VARCHAR(17),
+    Registration_Number VARCHAR(10),
+    Make VARCHAR(20),
+    Model VARCHAR(20),
+    First_Registration_Date DATE,
+    Fuel_Type ENUM('Gas', 'Diesel', 'Hybrid', 'Electric'),
+    Engine_Capacity INT(5),
+    Engine_Power INT(4),
+    Gearbox_Type VARCHAR(10),
+    Mileage INT(7),
+    Number_Of_Doors INT(1),
+    Drive_Type VARCHAR(10),
+    Prod_Year INT(4),
+    Sale_Price DECIMAL(10,2)
+);
+
+CREATE TABLE Sections(
+    Section_ID INT AUTO_INCREMENT,
+    Section_Name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (Section_ID)
+);
+
+CREATE TABLE Employees (
+    Employee_ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    Full_Name VARCHAR(50) NOT NULL,
+    Role VARCHAR(20),
+    Section_ID INT,
+    FOREIGN KEY (Section_ID) REFERENCES Sections(Section_ID)
+);
+
+CREATE TABLE Employee_Vehicle_Action(
+    Employee_ID INT,
+    Vehicle_ID INT,
+    Action VARCHAR(100),
+    Start_Date DATE,
+    End_Date DATE,
+    FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID),
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicles(Vehicle_ID),
+    PRIMARY KEY (Employee_ID, Vehicle_ID, Action)
+);
+
+CREATE TABLE External_Companies (
+    Company_ID INT AUTO_INCREMENT,
+    Name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (Company_ID)
+);
+
+
+CREATE TABLE Preparation (
+    Preparation_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Vehicle_ID INT,
+    Preparation_Costs DECIMAL(10,2),
+    Start_Date DATE,
+    End_Date DATE,
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicles(Vehicle_ID)
+);
+
+
+CREATE TABLE External_Services (
+    Service_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Vehicle_ID INT,
+    Company_ID INT,
+    Service_Description VARCHAR(255),
+    Service_Date TIMESTAMP,
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicles(Vehicle_ID),
+    FOREIGN KEY (Company_ID) REFERENCES External_Companies(Company_ID)
+);
+
+CREATE TABLE Transactions (
+    Transaction_ID INT AUTO_INCREMENT PRIMARY KEY,
+    Vehicle_ID INT,
+    Employee_ID INT,          
+    Transaction_Type ENUM('Purchase', 'Sale'), 
+    Transaction_Date DATE,
+    Price DECIMAL(10,2),
+    Notes TEXT, 
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicles(Vehicle_ID),
+    FOREIGN KEY (Employee_ID) REFERENCES Employees(Employee_ID)
+);
+
+CREATE TABLE CarMake (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE CarModel (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    make_id INT,
+    FOREIGN KEY (make_id) REFERENCES CarMake(id)
+);
+
+SELECT * FROM Vehicles;
+
+DROP TABLE CarMake;
+
+SELECT COUNT(*) FROM CarModel;
+
+DELETE cm1
+FROM CarModel cm1
+JOIN (
+    SELECT name, make_id, MIN(id) as min_id
+    FROM CarModel
+    GROUP BY name, make_id
+    HAVING COUNT(*) > 1
+) cm2 ON cm1.name = cm2.name AND cm1.make_id = cm2.make_id AND cm1.id > cm2.min_id;
