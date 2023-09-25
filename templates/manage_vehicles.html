@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Manage Vehicles</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for vehicle in vehicles %}
+        <tr>
+            <td>{{ vehicle.Vehicle_ID }}</td>
+            <td>{{ vehicle.Make }}</td>
+            <td>{{ vehicle.Model }}</td>
+            <td><a href="{{ url_for('edit_vehicle', vehicle_id=vehicle.Vehicle_ID) }}">Edit</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

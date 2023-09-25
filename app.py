@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from database import db
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SelectField, TextAreaField, SubmitField, DateField, DecimalField
@@ -21,7 +21,7 @@ class VehiclePurchaseForm(FlaskForm):
     Registration_Number = StringField('Registration Number', validators=[DataRequired()])
     Make = SelectField('Make', choices=[], validators=[DataRequired()])
     Model = SelectField('Model', choices=[], validators=[DataRequired()])
-    First_Registration_Date = StringField('First Registration Date', validators=[DataRequired()])
+    First_Registration_Date = DateField('First Registration Date', format='%Y-%m-%d', validators=[DataRequired()])
     Fuel_Type = SelectField('Fuel Type', choices=[
         ('Gas', 'Gas'),
         ('Diesel', 'Diesel'),
@@ -48,7 +48,7 @@ class VehiclePurchaseForm(FlaskForm):
     ])
     Prod_Year = IntegerField('Production Year', validators=[DataRequired()])
     Sale_Price = DecimalField('Price ($)', validators=[DataRequired()])
-    Transaction_Date = StringField('Transaction Date', validators=[DataRequired()])
+    Transaction_Date = DateField('Transaction Date', format='%Y-%m-%d', validators=[DataRequired()])
     Price = DecimalField('Price ($)', validators=[DataRequired()])
     Notes = StringField('Notes', validators=[Optional()])
 
@@ -60,6 +60,12 @@ class VehiclePurchaseForm(FlaskForm):
     Submit = SubmitField('Submit')
 
 
+@app.route('/get-models/<make_id>', methods=['GET'])
+def get_models(make_id):
+    models = CarModel.query.filter_by(make_id=make_id).all()
+    model_list = [{"id": m.id, "name": m.name} for m in models]
+    return jsonify(model_list)
+
 @app.route('/buyer', methods=['GET', 'POST'])
 def buyer_interface():
     form = VehiclePurchaseForm()
@@ -68,8 +74,8 @@ def buyer_interface():
     form.Model.choices = [(model.id, model.name) for model in CarModel.query.all()]
 
     if form.validate_on_submit():
-        first_registration_date = datetime.strptime(form.First_Registration_Date.data, '%d.%m.%Y').date()
-        transaction_date = datetime.strptime(form.Transaction_Date.data, '%d.%m.%Y').date()
+        first_registration_date = form.First_Registration_Date.data
+        transaction_date = form.Transaction_Date.data
 
         new_vehicle = Vehicle(
             VIN=form.VIN.data,
@@ -105,6 +111,25 @@ def buyer_interface():
         return redirect(url_for('buyer_interface'))
 
     return render_template('buyer_form.html', form=form)
+
+@app.route('/manage-vehicles', methods=['GET'])
+def manage_vehicles():
+    vehicles = Vehicle.query.all()
+    return render_template('manage_vehicles.html', vehicles=vehicles)
+
+@app.route('/edit-vehicle/<int:vehicle_id>', methods=['GET', 'POST'])
+def edit_vehicle(vehicle_id):
+    vehicle = Vehicle.query.get(vehicle_id)
+    if request.method == 'POST':
+
+        update_mileage = request.form['mileage']
+
+        vehicle.Mileage = update_mileage
+
+        db.session.commit()
+        return redirect(url_for('manage_vehicles'))
+    return render_template('edit_vehicle.html', vehicle=vehicle)
+
 
 
 if __name__ == '__main__':

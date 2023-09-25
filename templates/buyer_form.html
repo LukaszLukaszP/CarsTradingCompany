@@ -19,7 +19,7 @@
     {{ form.Model() }}<br><br>
 
     <label for="First_Registration_Date">First Registration Date:</label>
-    {{ form.First_Registration_Date() }}<br><br>
+    {{ form.First_Registration_Date.label }} {{ form.First_Registration_Date() }}<br><br>
 
     <label for="Fuel_Type">Fuel Type:</label>
     {{ form.Fuel_Type() }}<br><br>
@@ -49,7 +49,7 @@
     {{ form.Sale_Price() }}<br><br>
 
     <label for="Transaction_Date">Transaction Date:</label>
-    {{ form.Transaction_Date() }}<br><br>
+    {{ form.Transaction_Date.label }} {{ form.Transaction_Date() }}<br><br>
 
     <label for="Price">Price:</label>
     {{ form.Price() }}<br><br>
@@ -60,17 +60,33 @@
     <input type="submit" value="Submit">
 </form>
 
-{% for field in form %}
-    <label for="{{ field.id }}">{{ field.label.text }}</label>
-    {{ field() }}
-    {% for error in field.errors %}
-        <span style="color: red;">{{ error }}</span><br>
-    {% endfor %}
-    <br>
-{% endfor %}
 
 {% for message in get_flashed_messages() %}
     <p>{{ message }}</p>
 {% endfor %}
+
+<script>
+    $(document).ready(function() {
+    $('#Make').change(function() {
+        // When value changes on Make dropdown
+        var make_id = $(this).val();
+
+        if (make_id == "") {
+            // If no car make is selected, clear the models dropdown
+            $('#Model').html('<option value="">Select Model</option>');
+        } else {
+            // Fetch the models for the selected make
+            $.getJSON('/get-models/' + make_id, function(data) {
+                var models = data;
+                $('#Model').empty();
+                $('#Model').append('<option value="">Select Model</option>');
+                $.each(models, function(key, value) {
+                    $('#Model').append('<option value="' + value.id + '">' + value.name + '</option>');
+                });
+            });
+        }
+    });
+});
+</script>
 
 {% endblock %}
