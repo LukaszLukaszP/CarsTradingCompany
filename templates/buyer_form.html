@@ -7,7 +7,8 @@
     {{ form.hidden_tag() }}
 
     <label for="vin">VIN:</label>
-    {{ form.VIN() }}<br><br>
+    <input type="text" id="vin" name="vin" value="{{ form.VIN.data }}" maxlength="17" pattern="[A-Z0-9]{17}"
+           title="VIN must only contain uppercase letters and numbers" required><br><br>
 
     <label for="Registration_Number">Registration Number:</label>
     {{ form.Registration_Number() }}<br><br>
@@ -87,6 +88,16 @@
         }
     });
 });
+</script>
+
+<script>
+    document.getElementById('vin').addEventListener('input', function(e) {
+        var pattern = /^[A-Z0-9]{1,17}$/;
+        if (!pattern.test(e.target.value)) {
+            // Show an error message
+            alert("VIN must only contain uppercase letters and numbers");
+        }
+    });
 </script>
 
 {% endblock %}

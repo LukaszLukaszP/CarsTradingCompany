@@ -2,7 +2,8 @@ from datetime import date, datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from database import db
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SelectField, TextAreaField, SubmitField, DateField, DecimalField
+from wtforms import StringField, IntegerField, SelectField, TextAreaField, SubmitField, DateField, \
+    DecimalField, validators
 from wtforms.validators import DataRequired, Optional
 from models import Vehicle, Section, Employee, EmployeeVehicleAction, ExternalCompany, \
     Preparation, ExternalService, Transaction, CarMake, CarModel
@@ -17,13 +18,17 @@ with app.app_context():
 
 
 class VehiclePurchaseForm(FlaskForm):
-    VIN = StringField('VIN', validators=[DataRequired()])
+    VIN = StringField('VIN', [
+        validators.Length(max=17, message="VIN must be 17 characters"),
+        validators.Regexp(r'^[A-Z0-9]{17}$', message="VIN must only contain uppercase letters and numbers")
+    ])
     Registration_Number = StringField('Registration Number', validators=[DataRequired()])
     Make = SelectField('Make', choices=[], validators=[DataRequired()])
     Model = SelectField('Model', choices=[], validators=[DataRequired()])
     First_Registration_Date = DateField('First Registration Date', format='%Y-%m-%d', validators=[DataRequired()])
     Fuel_Type = SelectField('Fuel Type', choices=[
         ('Gas', 'Gas'),
+        ('Petrol', 'Petrol'),
         ('Diesel', 'Diesel'),
         ('Hybrid', 'Hybrid'),
         ('Electric', 'Electric')
@@ -80,8 +85,8 @@ def buyer_interface():
         new_vehicle = Vehicle(
             VIN=form.VIN.data,
             Registration_Number=form.Registration_Number.data,
-            Make=form.Make.data,
-            Model=form.Model.data,
+            make_id=form.Make.data,
+            model_id=form.Model.data,
             First_Registration_Date=first_registration_date,
             Fuel_Type=form.Fuel_Type.data,
             Engine_Capacity=form.Engine_Capacity.data,
@@ -114,8 +119,8 @@ def buyer_interface():
 
 @app.route('/manage-vehicles', methods=['GET'])
 def manage_vehicles():
-    vehicles = Vehicle.query.all()
-    return render_template('manage_vehicles.html', vehicles=vehicles)
+    related_vehicles = Vehicle.query.all()
+    return render_template('manage_vehicles.html', related_vehicles=related_vehicles)
 
 @app.route('/edit-vehicle/<int:vehicle_id>', methods=['GET', 'POST'])
 def edit_vehicle(vehicle_id):

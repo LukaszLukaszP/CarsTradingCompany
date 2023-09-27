@@ -8,10 +8,12 @@ class Vehicle(db.Model):
     Vehicle_ID = db.Column(db.Integer, primary_key=True)
     VIN = db.Column(db.String(17), unique=True, nullable=False)
     Registration_Number = db.Column(db.String(10))
-    Make = db.Column(db.String(20))
-    Model = db.Column(db.String(20))
+    make_id = db.Column(db.Integer, db.ForeignKey('CarMake.id'))
+    model_id = db.Column(db.Integer, db.ForeignKey('CarModel.id'))
+    # Make = db.Column(db.String(20))
+    # Model = db.Column(db.String(20))
     First_Registration_Date = db.Column(db.Date)
-    Fuel_Type = db.Column(db.String(5))
+    Fuel_Type = db.Column(db.String(10))
     Engine_Capacity = db.Column(db.Integer)
     Engine_Power = db.Column(db.Integer)
     Gearbox_Type = db.Column(db.String(10))
@@ -25,6 +27,9 @@ class Vehicle(db.Model):
     preparations = db.relationship('Preparation', back_populates='vehicle')
     external_services = db.relationship('ExternalService', back_populates='vehicle')
     transactions = db.relationship('Transaction', back_populates='vehicle')
+
+    make = db.relationship('CarMake', backref='related_vehicles')
+    model = db.relationship('CarModel', backref='model_vehicles')
 
 
 class Section(db.Model):
@@ -117,6 +122,8 @@ class CarMake(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
+    vehicles = db.relationship('Vehicle', back_populates='make')
+
     models = db.relationship('CarModel', back_populates='make')
 
 
@@ -128,3 +135,7 @@ class CarModel(db.Model):
     make_id = db.Column(db.Integer, db.ForeignKey('CarMake.id'), nullable=False)
 
     make = db.relationship('CarMake', back_populates='models')
+
+    vehicles = db.relationship('Vehicle', back_populates='model')
+
+
