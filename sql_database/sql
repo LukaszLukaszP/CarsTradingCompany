@@ -8,8 +8,6 @@ CREATE TABLE Vehicles (
     Vehicle_ID INT AUTO_INCREMENT PRIMARY KEY,
     VIN VARCHAR(17),
     Registration_Number VARCHAR(10),
-    Make VARCHAR(20),
-    Model VARCHAR(20),
     First_Registration_Date DATE,
     Fuel_Type ENUM('Gas', 'Diesel', 'Hybrid', 'Electric'),
     Engine_Capacity INT(5),
@@ -98,12 +96,6 @@ CREATE TABLE CarModel (
     FOREIGN KEY (make_id) REFERENCES CarMake(id)
 );
 
-SELECT * FROM Vehicles;
-
-DROP TABLE CarMake;
-
-SELECT COUNT(*) FROM CarModel;
-
 DELETE cm1
 FROM CarModel cm1
 JOIN (
@@ -122,6 +114,3 @@ ALTER TABLE Vehicles ADD FOREIGN KEY (model_id) REFERENCES CarModel(id);
 UPDATE Vehicles
 SET make_id = (SELECT id FROM CarMake WHERE name = Vehicles.Make),
     model_id = (SELECT id FROM CarModel WHERE name = Vehicles.Model);
-
-ALTER TABLE Vehicles DROP COLUMN Make;
-ALTER TABLE Vehicles DROP COLUMN Model;

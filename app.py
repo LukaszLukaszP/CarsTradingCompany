@@ -124,15 +124,31 @@ def manage_vehicles():
 
 @app.route('/edit-vehicle/<int:vehicle_id>', methods=['GET', 'POST'])
 def edit_vehicle(vehicle_id):
-    vehicle = Vehicle.query.get(vehicle_id)
+    vehicle = Vehicle.query.get_or_404(vehicle_id)
     if request.method == 'POST':
 
-        update_mileage = request.form['mileage']
+        vehicle.VIN = request.form['vin']
+        vehicle.Registration_Number = request.form['registration_number']
+        vehicle.Make = request.form['make']
+        vehicle.Model = request.form['model']
+        vehicle.First_Registration_Date = request.form['first_registration_date']
+        vehicle.Fuel_Type = request.form['fuel_type']
+        vehicle.Engine_Capacity = request.form['engine_capacity']
+        vehicle.Engine_Power = request.form['engine_power']
+        vehicle.Gearbox_Type = request.form['gearbox_type']
+        vehicle.Mileage = request.form['mileage']
+        #vehicle.Equipment_Version = request.form['equipment_version']
+        vehicle.Number_Of_Doors = request.form['door_count']
+        vehicle.Drive_Type = request.form['drive_type']
 
-        vehicle.Mileage = update_mileage
+        try:
+            db.session.commit()
+            flash('Vehicle details updated successfully!', 'success')
+            return redirect(url_for('manage_vehicles'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {e}', 'danger')
 
-        db.session.commit()
-        return redirect(url_for('manage_vehicles'))
     return render_template('edit_vehicle.html', vehicle=vehicle)
 
 

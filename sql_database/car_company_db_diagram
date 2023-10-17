@@ -1,0 +1,89 @@
+Table Vehicles {
+  Vehicle_ID INT
+  VIN VARCHAR(17)
+  Registration_Number VARCHAR(10)
+  First_Registration_Date DATE
+  Fuel_Type ENUM('Gas', 'Diesel', 'Hybrid', 'Electric')
+  Engine_Capacity INT(5)
+  Engine_Power INT(4)
+  Gearbox_Type VARCHAR(10)
+  Mileage INT(7)
+  Number_Of_Doors INT(1)
+  Drive_Type VARCHAR(10)
+  Prod_Year INT(4)
+  Sale_Price DECIMAL(10,2)
+  make_id INT
+  model_id INT
+}
+
+Table Employees {
+  Employee_ID integer [primary key]
+  Name varchar
+  Position varchar
+  Section_ID integer
+}
+
+Table Sections {
+  Section_ID integer [primary key]
+  Section_Name varchar
+}
+
+Table Employee_Vehicle_Action {
+  Employee_ID integer [ref: > Employees.Employee_ID]
+  Vehicle_ID integer [ref: > Vehicles.Vehicle_ID]
+  Action varchar
+  Start_Date date
+  End_Date date
+  PK_Action PK (Employee_ID, Vehicle_ID, Action)
+}
+
+Table External_Companies {
+  Company_ID integer [primary key]
+  Name varchar
+}
+
+Table Purchase {
+  Purchase_ID integer [primary key]
+  Vehicle_ID integer [ref: > Vehicles.Vehicle_ID]
+  Purchase_Price decimal
+  Purchase_Date date
+}
+
+Table Preparation {
+  Preparation_ID integer [primary key]
+  Vehicle_ID integer [ref: > Vehicles.Vehicle_ID]
+  Preparation_Costs decimal
+  Start_Date date
+  End_Date date
+}
+
+Table Sales {
+  Sale_ID integer [primary key]
+  Vehicle_ID integer [ref: > Vehicles.Vehicle_ID]
+  Selling_Price decimal
+  Sale_Date date
+}
+
+Table External_Services {
+  Service_ID integer [primary key]
+  Vehicle_ID integer [ref: > Vehicles.Vehicle_ID]
+  Company_ID integer [ref: > External_Companies.Company_ID]
+  Service_Description varchar
+  Service_Date timestamp
+}
+
+Table CarMake {
+  id INT
+  name VARCHAR(50)
+}
+
+Table CarModel {
+  id INT
+  name VARCHAR(50)
+  make_id INT
+}
+
+Ref: Employees.Section_ID > Sections.Section_ID
+Ref: CarModel.make_id > CarMake.id
+Ref: Vehicles.make_id > CarMake.id
+Ref: Vehicles.model_id > CarModel.id
