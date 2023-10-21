@@ -3,7 +3,7 @@ Table Vehicles {
   VIN VARCHAR(17)
   Registration_Number VARCHAR(10)
   First_Registration_Date DATE
-  Fuel_Type ENUM('Gas', 'Diesel', 'Hybrid', 'Electric')
+  Fuel_Type ENUM('Gas', 'Diesel', 'Hybrid', 'Electric', 'Plug-in Hybrid')
   Engine_Capacity INT(5)
   Engine_Power INT(4)
   Gearbox_Type VARCHAR(10)
@@ -14,6 +14,10 @@ Table Vehicles {
   Sale_Price DECIMAL(10,2)
   make_id INT
   model_id INT
+  optical_preparation DECIMAL(10,2)
+  mechanical_preparation DECIMAL(10,2)
+  other_preparation_costs DECIMAL(10,2)
+  margin DECIMAL(10,2)
 }
 
 Table Employees {
@@ -47,6 +51,9 @@ Table Purchase {
   Vehicle_ID integer [ref: > Vehicles.Vehicle_ID]
   Purchase_Price decimal
   Purchase_Date date
+  tax DECIMAL(5,3)
+  excise_tax DECIMAL(10,2)
+  sales_price DECIMAL(10,2)
 }
 
 Table Preparation {

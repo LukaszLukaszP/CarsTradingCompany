@@ -3,10 +3,10 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from database import db
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SelectField, TextAreaField, SubmitField, DateField, \
-    DecimalField, validators
+    DecimalField, validators, FloatField, BooleanField
 from wtforms.validators import DataRequired, Optional
 from models import Vehicle, Section, Employee, EmployeeVehicleAction, ExternalCompany, \
-    Preparation, ExternalService, Transaction, CarMake, CarModel
+    Preparation, ExternalService, Transaction, CarMake, CarModel, Purchase
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qwerty'
@@ -31,7 +31,8 @@ class VehiclePurchaseForm(FlaskForm):
         ('Petrol', 'Petrol'),
         ('Diesel', 'Diesel'),
         ('Hybrid', 'Hybrid'),
-        ('Electric', 'Electric')
+        ('Electric', 'Electric'),
+        ('Plug-in Hybrid', 'Plug-in Hybrid')
     ])
     Engine_Capacity = IntegerField('Engine Capacity (cc)', validators=[DataRequired()])
     Engine_Power = IntegerField('Engine Power (HP)', validators=[DataRequired()])
@@ -54,8 +55,13 @@ class VehiclePurchaseForm(FlaskForm):
     Prod_Year = IntegerField('Production Year', validators=[DataRequired()])
     Sale_Price = DecimalField('Price ($)', validators=[DataRequired()])
     Transaction_Date = DateField('Transaction Date', format='%Y-%m-%d', validators=[DataRequired()])
-    Price = DecimalField('Price ($)', validators=[DataRequired()])
+    Purchase_Price = DecimalField('Purchase Price ($)', validators=[DataRequired()])
     Notes = StringField('Notes', validators=[Optional()])
+    optical_preparation = FloatField('Optical Preparation', validators=[DataRequired()])
+    mechanical_preparation = FloatField('Mechanical Preparation', validators=[DataRequired()])
+    other_preparation_costs = FloatField('Other Preparation Costs', validators=[DataRequired()])
+    tax = SelectField('Tax', choices=[('0', '0%'), ('0.02', '2%')], validators=[DataRequired()])
+    excise_tax_checkbox = BooleanField('Excise Tax?')
 
     def __init__(self, *args, **kwargs):
         super(VehiclePurchaseForm, self).__init__(*args, **kwargs)
@@ -97,6 +103,9 @@ def buyer_interface():
             Drive_Type=form.Drive_Type.data,
             Prod_Year=form.Prod_Year.data,
             Sale_Price=form.Sale_Price.data,
+            optical_preparation=form.optical_preparation.data,
+            mechanical_preparation=form.mechanical_preparation.data,
+            other_preparation_costs=form.other_preparation_costs.data,
         )
 
         db.session.add(new_vehicle)
@@ -105,11 +114,21 @@ def buyer_interface():
         new_transaction = Transaction(
             Vehicle_ID=new_vehicle.Vehicle_ID,
             Transaction_Date=transaction_date,
-            Price=form.Price.data,
+            Purchase_Price=form.Purchase_Price.data,
             Notes=form.Notes.data
         )
 
         db.session.add(new_transaction)
+        db.session.commit()
+
+        new_purchase = Purchase(
+            tax=form.tax.data,
+            excise_tax=form.excise_tax.data,
+            sales_price=form.sales_price.data,
+            margin=form.margin.data,
+        )
+
+        db.session.add(new_purchase)
         db.session.commit()
 
         flash('Vehicle and Purchase details saved successfully!', 'success')

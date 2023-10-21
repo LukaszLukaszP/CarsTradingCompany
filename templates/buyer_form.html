@@ -52,11 +52,39 @@
     <label for="Transaction_Date">Transaction Date:</label>
     {{ form.Transaction_Date.label }} {{ form.Transaction_Date() }}<br><br>
 
-    <label for="Price">Price:</label>
-    {{ form.Price() }}<br><br>
+    <label for="Purchase_Price">Purchase Price:</label>
+    {{ form.Purchase_Price() }}<br><br>
 
     <label for="Notes">Notes:</label>
     {{ form.Notes() }}<br><br>
+
+    <label for="optical_preparation">Optical Preparation:</label>
+    {{ form.optical_preparation() }}<br><br>
+
+    <label for="mechanical_preparation">Mechanical Preparation</label>
+    {{ form.mechanical_preparation() }}<br><br>
+
+    <label for="other_preparation_costs">Other Preparation Costs</label>
+    {{ form.other_preparation_costs() }}<br><br>
+
+    <label for="tax">Tax</label>
+    <select id="tax" name="tax">
+        <option value="0">0%</option>
+        <option value="0.02">2%</option>
+    </select> <br><br>
+
+    <label for="excise_tax_checkbox">Excise Tax?</label>
+    <input type="checkbox" id="excise_tax_checkbox" name="excise_tax_checkbox"><br><br>
+
+    <label for="excise_tax">Excise Tax:</label>
+    <input type="text" name="excise_tax" id="excise_tax"><br><br>
+
+    <label for="sales_price">Sales price:</label>
+    <input type="text" name="sales_price" id="sales_price_input"><br><br>
+
+    <label for="margin">Margin:</label>
+    <input type="text" name="margin" id="margin"><br><br>
+
 
     <input type="submit" value="Submit">
 </form>
@@ -99,5 +127,62 @@
         }
     });
 </script>
+
+
+<script>
+    $(document).ready(function() {
+    function calculateExciseTax(Purchase_Price, Fuel_Type, Engine_Capacity) {
+        if (Fuel_Type === "electric") {
+            return 0;
+        } else if (Fuel_Type === "Petrol" && Engine_Capacity <= 2000) {
+            return 0.031 * Purchase_Price;
+        } else if (Fuel_Type === "Petrol" && Engine_Capacity > 2000) {
+            return 0.186 * Purchase_Price;
+        } else if (Fuel_Type === "Gas" && Engine_Capacity <= 2000) {
+            return 0.031 * Purchase_Price;
+        } else if (Fuel_Type === "Gas" && Engine_Capacity > 2000) {
+            return 0.186 * Purchase_Price;
+        } else if (Fuel_Type === "Diesel" && Engine_Capacity <= 2000) {
+            return 0.031 * Purchase_Price;
+        } else if (Fuel_Type === "Diesel" && Engine_Capacity > 2000) {
+            return 0.186 * Purchase_Price;
+        } else if (Fuel_Type === "Hybrid") {
+            // Half of the excise tax on combustion vehicles
+            return 0.5 * calculateExciseTax(Purchase_Price, "Petrol", Engine_Capacity);
+        } else if (Fuel_Type === "Plug-in Hybrid" && Engine_Capacity <= 2000) {
+            return 0;
+        } else if (Fuel_Type === "Plug-in Hybrid" && Engine_Capacity > 2000) {
+            return 0.5 * calculateExciseTax(Purchase_Price, "Petrol", Engine_Capacity);
+        }
+        return 0;
+    }
+
+    // Listener to dynamically update values when input changes
+    $("input, select").change(function() {
+        var Purchase_Price = parseFloat($("#Purchase_Price").val()) || 0;
+        var optical_preparation = parseFloat($("#optical_preparation").val()) || 0;
+        var mechanical_preparation = parseFloat($("#mechanical_preparation").val()) || 0;
+        var other_preparation_costs = parseFloat($("#other_preparation_costs").val()) || 0;
+        var tax = parseFloat($("#tax").val()) || 0;
+        var Fuel_Type = $("#Fuel_Type").val();
+        var Engine_Capacity = parseFloat($("#Engine_Capacity").val()) || 0;
+
+        var exciseTax = 0;
+        if ($("#excise_tax_checkbox").is(":checked")) {
+            exciseTax = calculateExciseTax(Purchase_Price, Fuel_Type, Engine_Capacity);
+        }
+
+        var totalTax = tax * Purchase_Price;
+        var margin = 0.10 * Purchase_Price;
+        var totalSalePrice = Purchase_Price + optical_preparation + mechanical_preparation + other_preparation_costs + totalTax + exciseTax + margin;
+
+        $("#sales_price_input").val(totalSalePrice.toFixed(2));
+        $("#margin").val(margin.toFixed(2));
+        $("#excise_tax").val(exciseTax.toFixed(2));
+    });
+});
+
+</script>
+
 
 {% endblock %}

@@ -22,6 +22,10 @@ class Vehicle(db.Model):
     Drive_Type = db.Column(db.String(10))
     Prod_Year = db.Column(db.Integer)
     Sale_Price = db.Column(DECIMAL(precision=10, scale=2))
+    optical_preparation = db.Column(db.DECIMAL(10, 2))
+    mechanical_preparation = db.Column(db.DECIMAL(10, 2))
+    other_preparation_costs = db.Column(db.DECIMAL(10, 2))
+    margin = db.Column(db.DECIMAL(10, 2))
 
     vehicle_actions = db.relationship('EmployeeVehicleAction', back_populates='vehicle')
     preparations = db.relationship('Preparation', back_populates='vehicle')
@@ -139,3 +143,15 @@ class CarModel(db.Model):
     vehicles = db.relationship('Vehicle', back_populates='model')
 
 
+class Purchase(db.Model):
+    __tablename__ = 'Purchase'
+
+    Purchase_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Vehicle_ID = db.Column(db.Integer, db.ForeignKey('Vehicles.Vehicle_ID'))
+    Purchase_Price = db.Column(db.DECIMAL(10, 2))
+    Purchase_Date = db.Column(db.Date)
+    tax = db.Column(db.DECIMAL(5, 3))
+    excise_tax = db.Column(db.DECIMAL(10, 2))
+    sales_price = db.Column(db.DECIMAL(10, 2))
+
+    vehicle = db.relationship('Vehicle', backref='purchases')
