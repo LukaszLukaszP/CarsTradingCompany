@@ -1,98 +1,148 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Vehicle Purchase Form</h2>
+<div class="container mt-4">
+    <h2>Vehicle Purchase Form</h2>
+    <form method="post" class="needs-validation" novalidate>
+        {{ form.hidden_tag() }}
 
-<form method="post">
-    {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="vin">VIN:</label>
+            <input type="text" class="form-control" id="vin" name="vin" value="{{ form.VIN.data }}" maxlength="17" pattern="[A-Z0-9]{17}" title="VIN must only contain uppercase letters and numbers" required>
+            <div class="invalid-feedback">Please provide a valid VIN.</div>
+        </div>
 
-    <label for="vin">VIN:</label>
-    <input type="text" id="vin" name="vin" value="{{ form.VIN.data }}" maxlength="17" pattern="[A-Z0-9]{17}"
-           title="VIN must only contain uppercase letters and numbers" required><br><br>
+        <div class="form-group">
+            <label for="Registration_Number">Registration Number:</label>
+            {{ form.Registration_Number(class="form-control") }}
+        </div>
 
-    <label for="Registration_Number">Registration Number:</label>
-    {{ form.Registration_Number() }}<br><br>
+        <div class="form-group">
+            <label for="Make">Make:</label>
+            {{ form.Make(class="form-control") }}
+        </div>
 
-    <label for="Make">Make:</label>
-    {{ form.Make() }}<br><br>
+        <div class="form-group">
+            <label for="Model">Model:</label>
+            {{ form.Model(class="form-control") }}
+        </div>
 
-    <label for="Model">Model:</label>
-    {{ form.Model() }}<br><br>
+        <div class="form-group">
+            <label for="First_Registration_Date">First Registration Date:</label>
+            {{ form.First_Registration_Date(class="form-control") }}
+        </div>
 
-    <label for="First_Registration_Date">First Registration Date:</label>
-    {{ form.First_Registration_Date.label }} {{ form.First_Registration_Date() }}<br><br>
+        <div class="form-group">
+            <label for="Fuel_Type">Fuel Type:</label>
+            {{ form.Fuel_Type(class="form-control") }}
+        </div>
 
-    <label for="Fuel_Type">Fuel Type:</label>
-    {{ form.Fuel_Type() }}<br><br>
+        <div class="form-group">
+            <label for="Engine_Capacity">Engine Capacity:</label>
+            {{ form.Engine_Capacity(class="form-control") }}
+        </div>
 
-    <label for="Engine_Capacity">Engine Capacity:</label>
-    {{ form.Engine_Capacity() }}<br><br>
+        <div class="form-group">
+            <label for="Engine_Power">Engine Power:</label>
+            {{ form.Engine_Power(class="form-control") }}
+        </div>
 
-    <label for="Engine_Power">Engine Power:</label>
-    {{ form.Engine_Power() }}<br><br>
+        <div class="form-group">
+            <label for="Gearbox_Type">Gearbox Type:</label>
+            {{ form.Gearbox_Type(class="form-control") }}
+        </div>
 
-    <label for="Gearbox_Type">Gearbox Type:</label>
-    {{ form.Gearbox_Type() }}<br><br>
+        <div class="form-group">
+            <label for="Mileage">Mileage:</label>
+            {{ form.Mileage(class="form-control") }}
+        </div>
 
-    <label for="Mileage">Mileage:</label>
-    {{ form.Mileage() }}<br><br>
+        <div class="form-group">
+            <label for="Number_Of_Doors">Number Of Doors:</label>
+            {{ form.Number_Of_Doors(class="form-control") }}
+        </div>
 
-    <label for="Number_Of_Doors">Number Of Doors:</label>
-    {{ form.Number_Of_Doors() }}<br><br>
+        <div class="form-group">
+            <label for="Drive_Type">Drive Type:</label>
+            {{ form.Drive_Type(class="form-control") }}
+        </div>
 
-    <label for="Drive_Type">Drive Type:</label>
-    {{ form.Drive_Type() }}<br><br>
+        <div class="form-group">
+            <label for="Prod_Year">Prod Year:</label>
+            {{ form.Prod_Year(class="form-control") }}
+        </div>
 
-    <label for="Prod_Year">Prod Year:</label>
-    {{ form.Prod_Year() }}<br><br>
+        <div class="form-group">
+            <label for="Sale_Price">Sale Price:</label>
+            {{ form.Sale_Price(class="form-control") }}
+        </div>
 
-    <label for="Sale_Price">Sale Price:</label>
-    {{ form.Sale_Price() }}<br><br>
+        <div class="form-group">
+            <label for="Transaction_Date">Transaction Date:</label>
+            {{ form.Transaction_Date(class="form-control") }}
+        </div>
 
-    <label for="Transaction_Date">Transaction Date:</label>
-    {{ form.Transaction_Date.label }} {{ form.Transaction_Date() }}<br><br>
+        <div class="form-group">
+            <label for="Purchase_Price">Purchase Price:</label>
+            {{ form.Purchase_Price(class="form-control") }}
+        </div>
 
-    <label for="Purchase_Price">Purchase Price:</label>
-    {{ form.Purchase_Price() }}<br><br>
+        <div class="form-group">
+            <label for="Notes">Notes:</label>
+            {{ form.Notes(class="form-control") }}
+        </div>
 
-    <label for="Notes">Notes:</label>
-    {{ form.Notes() }}<br><br>
+        <div class="form-group">
+            <label for="optical_preparation">Optical Preparation:</label>
+            {{ form.optical_preparation(class="form-control") }}
+        </div>
 
-    <label for="optical_preparation">Optical Preparation:</label>
-    {{ form.optical_preparation() }}<br><br>
+        <div class="form-group">
+            <label for="mechanical_preparation">Mechanical Preparation:</label>
+            {{ form.mechanical_preparation(class="form-control") }}
+        </div>
 
-    <label for="mechanical_preparation">Mechanical Preparation</label>
-    {{ form.mechanical_preparation() }}<br><br>
+        <div class="form-group">
+            <label for="other_preparation_costs">Other Preparation Costs:</label>
+            {{ form.other_preparation_costs(class="form-control") }}
+        </div>
 
-    <label for="other_preparation_costs">Other Preparation Costs</label>
-    {{ form.other_preparation_costs() }}<br><br>
+        <div class="form-group">
+            <label for="tax">Tax:</label>
+            <select id="tax" name="tax" class="form-control">
+                <option value="0">0%</option>
+                <option value="0.02">2%</option>
+            </select>
+        </div>
 
-    <label for="tax">Tax</label>
-    <select id="tax" name="tax">
-        <option value="0">0%</option>
-        <option value="0.02">2%</option>
-    </select> <br><br>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="excise_tax_checkbox" name="excise_tax_checkbox">
+            <label class="form-check-label" for="excise_tax_checkbox">Excise Tax?</label>
+        </div>
 
-    <label for="excise_tax_checkbox">Excise Tax?</label>
-    <input type="checkbox" id="excise_tax_checkbox" name="excise_tax_checkbox"><br><br>
+        <div class="form-group">
+            <label for="excise_tax">Excise Tax:</label>
+            <input type="text" class="form-control" name="excise_tax" id="excise_tax">
+        </div>
 
-    <label for="excise_tax">Excise Tax:</label>
-    <input type="text" name="excise_tax" id="excise_tax"><br><br>
+        <div class="form-group">
+            <label for="sales_price">Sales Price:</label>
+            <input type="text" class="form-control" name="sales_price" id="sales_price_input">
+        </div>
 
-    <label for="sales_price">Sales price:</label>
-    <input type="text" name="sales_price" id="sales_price_input"><br><br>
+        <div class="form-group">
+            <label for="margin">Margin:</label>
+            <input type="text" class="form-control" name="margin" id="margin">
+        </div>
 
-    <label for="margin">Margin:</label>
-    <input type="text" name="margin" id="margin"><br><br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-info" role="alert">{{ message }}</div>
+    {% endfor %}
+</div>
 
-    <input type="submit" value="Submit">
-</form>
-
-
-{% for message in get_flashed_messages() %}
-    <p>{{ message }}</p>
-{% endfor %}
 
 <script>
     $(document).ready(function() {
@@ -173,7 +223,7 @@
         }
 
         var totalTax = tax * Purchase_Price;
-        var margin = 0.10 * Purchase_Price;
+        var margin = 0.20 * Purchase_Price;
         var totalSalePrice = Purchase_Price + optical_preparation + mechanical_preparation + other_preparation_costs + totalTax + exciseTax + margin;
 
         $("#sales_price_input").val(totalSalePrice.toFixed(2));

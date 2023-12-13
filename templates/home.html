@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+<!-- Pasek nawigacyjny -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Car Management App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Jumbotron -->
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to the Used Car Management App!</h1>
+    <p class="lead">This is your hub for managing the trade of used cars.</p>
+    <hr class="my-4">
+    <p>Here you'll find everything you need for efficient management of car purchasing, selling, and servicing.</p>
+    <a class="btn btn-primary btn-lg" href="#" role="button">Learn More</a>
+</div>
+
+<!-- Karty z informacjami -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Car Purchase</h5>
+                    <p class="card-text">Add new vehicles to your database.</p>
+                    <a href="/buyer" class="btn btn-primary">Go to Purchase</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Vehicles</h5>
+                    <p class="card-text">Manage your fleet of vehicles, edit details, and track vehicle history.</p>
+                    <a href="/manage-vehicles" class="btn btn-primary">Manage Vehicles</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Car Sales</h5>
+                    <p class="card-text">Discover tools for selling your cars and tracking profits.</p>
+                    <a href="#" class="btn btn-primary">Go to Sales</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

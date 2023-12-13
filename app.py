@@ -102,7 +102,7 @@ def buyer_interface():
             Number_Of_Doors=form.Number_Of_Doors.data,
             Drive_Type=form.Drive_Type.data,
             Prod_Year=form.Prod_Year.data,
-            Sale_Price=form.Sale_Price.data,
+            Sale_Price=form.sales_price.data,
             optical_preparation=form.optical_preparation.data,
             mechanical_preparation=form.mechanical_preparation.data,
             other_preparation_costs=form.other_preparation_costs.data,
@@ -169,6 +169,12 @@ def edit_vehicle(vehicle_id):
             flash(f'An error occurred: {e}', 'danger')
 
     return render_template('edit_vehicle.html', vehicle=vehicle)
+
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 
 
 
