@@ -7,8 +7,9 @@
         {{ form.hidden_tag() }}
 
         <div class="form-group">
-            <label for="vin">VIN:</label>
-            <input type="text" class="form-control" id="vin" name="vin" value="{{ form.VIN.data }}" maxlength="17" pattern="[A-Z0-9]{17}" title="VIN must only contain uppercase letters and numbers" required>
+            <label for="VIN">VIN:</label>
+            <input type="text" class="form-control" id="VIN" name="VIN" value="{{ form.VIN.data }}" maxlength="17"
+                   pattern="[A-Z0-9]{17}" title="VIN must only contain uppercase letters and numbers" required>
             <div class="invalid-feedback">Please provide a valid VIN.</div>
         </div>
 
@@ -73,11 +74,6 @@
         </div>
 
         <div class="form-group">
-            <label for="Sale_Price">Sale Price:</label>
-            {{ form.Sale_Price(class="form-control") }}
-        </div>
-
-        <div class="form-group">
             <label for="Transaction_Date">Transaction Date:</label>
             {{ form.Transaction_Date(class="form-control") }}
         </div>
@@ -126,8 +122,8 @@
         </div>
 
         <div class="form-group">
-            <label for="sales_price">Sales Price:</label>
-            <input type="text" class="form-control" name="sales_price" id="sales_price_input">
+            <label for="Sale_Price">Sales Price:</label>
+            <input type="text" class="form-control" name="Sale_Price" id="sales_price_input">
         </div>
 
         <div class="form-group">

@@ -1,24 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Manage Vehicles</h2>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Make</th>
-            <th>Model</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for vehicle in related_vehicles %}
-        <tr>
-            <td>{{ vehicle.Vehicle_ID }}</td>
-            <td>{{ vehicle.make.name }}</td>
-            <td>{{ vehicle.model.name }}</td>
-            <td><a href="{{ url_for('edit_vehicle', vehicle_id=vehicle.Vehicle_ID) }}">Edit</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container mt-4">
+    <h2>Manage Vehicles</h2>
+
+     <!-- Formularz Wyszukiwania -->
+    <form action="{{ url_for('manage_vehicles') }}" method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" class="form-control" name="search_query" placeholder="Search vehicles...">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
+
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th>Make</th>
+                <th>Model</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehicle in related_vehicles %}
+            <tr>
+                <td>{{ vehicle.Vehicle_ID }}</td>
+                <td>{{ vehicle.make.name }}</td>
+                <td>{{ vehicle.model.name }}</td>
+                <td>
+                    <a href="{{ url_for('edit_vehicle', vehicle_id=vehicle.Vehicle_ID) }}" class="btn btn-sm btn-primary">Edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

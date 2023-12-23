@@ -10,8 +10,6 @@ class Vehicle(db.Model):
     Registration_Number = db.Column(db.String(10))
     make_id = db.Column(db.Integer, db.ForeignKey('CarMake.id'))
     model_id = db.Column(db.Integer, db.ForeignKey('CarModel.id'))
-    # Make = db.Column(db.String(20))
-    # Model = db.Column(db.String(20))
     First_Registration_Date = db.Column(db.Date)
     Fuel_Type = db.Column(db.String(10))
     Engine_Capacity = db.Column(db.Integer)
@@ -113,7 +111,7 @@ class Transaction(db.Model):
     Employee_ID = db.Column(db.Integer, db.ForeignKey('Employees.Employee_ID'))
     Transaction_Type = db.Column(db.Enum('Purchase', 'Sale'))
     Transaction_Date = db.Column(db.Date)
-    Price = db.Column(DECIMAL(precision=10, scale=2))
+    Purchase_Price = db.Column(DECIMAL(precision=10, scale=2))
     Notes = db.Column(db.String(255))
 
     vehicle = db.relationship('Vehicle', back_populates='transactions')

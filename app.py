@@ -32,7 +32,7 @@ class VehiclePurchaseForm(FlaskForm):
         ('Diesel', 'Diesel'),
         ('Hybrid', 'Hybrid'),
         ('Electric', 'Electric'),
-        ('Plug-in Hybrid', 'Plug-in Hybrid')
+        ('Plug-in', 'Plug-in')
     ])
     Engine_Capacity = IntegerField('Engine Capacity (cc)', validators=[DataRequired()])
     Engine_Power = IntegerField('Engine Power (HP)', validators=[DataRequired()])
@@ -53,7 +53,6 @@ class VehiclePurchaseForm(FlaskForm):
         ('AWD', 'All-Wheel Drive')
     ])
     Prod_Year = IntegerField('Production Year', validators=[DataRequired()])
-    Sale_Price = DecimalField('Price ($)', validators=[DataRequired()])
     Transaction_Date = DateField('Transaction Date', format='%Y-%m-%d', validators=[DataRequired()])
     Purchase_Price = DecimalField('Purchase Price ($)', validators=[DataRequired()])
     Notes = StringField('Notes', validators=[Optional()])
@@ -61,7 +60,9 @@ class VehiclePurchaseForm(FlaskForm):
     mechanical_preparation = FloatField('Mechanical Preparation', validators=[DataRequired()])
     other_preparation_costs = FloatField('Other Preparation Costs', validators=[DataRequired()])
     tax = SelectField('Tax', choices=[('0', '0%'), ('0.02', '2%')], validators=[DataRequired()])
-    excise_tax_checkbox = BooleanField('Excise Tax?')
+    excise_tax = DecimalField('Excise ($)', validators=[DataRequired()])
+    Sale_Price = DecimalField('Price ($)', validators=[DataRequired()])
+    margin = DecimalField('Margin ($)', validators=[DataRequired()])
 
     def __init__(self, *args, **kwargs):
         super(VehiclePurchaseForm, self).__init__(*args, **kwargs)
@@ -102,10 +103,11 @@ def buyer_interface():
             Number_Of_Doors=form.Number_Of_Doors.data,
             Drive_Type=form.Drive_Type.data,
             Prod_Year=form.Prod_Year.data,
-            Sale_Price=form.sales_price.data,
+            Sale_Price=form.Sale_Price.data,
             optical_preparation=form.optical_preparation.data,
             mechanical_preparation=form.mechanical_preparation.data,
             other_preparation_costs=form.other_preparation_costs.data,
+            margin=form.margin.data
         )
 
         db.session.add(new_vehicle)
@@ -125,7 +127,7 @@ def buyer_interface():
             tax=form.tax.data,
             excise_tax=form.excise_tax.data,
             sales_price=form.sales_price.data,
-            margin=form.margin.data,
+            margin=form.margin.data
         )
 
         db.session.add(new_purchase)
@@ -144,7 +146,9 @@ def manage_vehicles():
 @app.route('/edit-vehicle/<int:vehicle_id>', methods=['GET', 'POST'])
 def edit_vehicle(vehicle_id):
     vehicle = Vehicle.query.get_or_404(vehicle_id)
-    if request.method == 'POST':
+    form = VehiclePurchaseForm(obj=vehicle)
+
+    if request.method == 'POST' and form.validate_on_submit():
 
         vehicle.VIN = request.form['vin']
         vehicle.Registration_Number = request.form['registration_number']
@@ -156,7 +160,6 @@ def edit_vehicle(vehicle_id):
         vehicle.Engine_Power = request.form['engine_power']
         vehicle.Gearbox_Type = request.form['gearbox_type']
         vehicle.Mileage = request.form['mileage']
-        #vehicle.Equipment_Version = request.form['equipment_version']
         vehicle.Number_Of_Doors = request.form['door_count']
         vehicle.Drive_Type = request.form['drive_type']
 
@@ -168,7 +171,7 @@ def edit_vehicle(vehicle_id):
             db.session.rollback()
             flash(f'An error occurred: {e}', 'danger')
 
-    return render_template('edit_vehicle.html', vehicle=vehicle)
+    return render_template('edit_vehicle.html', vehicle=vehicle, form=form)
 
 
 @app.route('/')
