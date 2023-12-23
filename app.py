@@ -124,10 +124,12 @@ def buyer_interface():
         db.session.commit()
 
         new_purchase = Purchase(
+            Vehicle_ID=new_vehicle.Vehicle_ID,
             tax=form.tax.data,
             excise_tax=form.excise_tax.data,
-            sales_price=form.sales_price.data,
-            margin=form.margin.data
+            Sale_Price=form.Sale_Price.data,
+            Purchase_Date=transaction_date,
+            Purchase_Price=form.Purchase_Price.data
         )
 
         db.session.add(new_purchase)

@@ -195,9 +195,9 @@
         } else if (Fuel_Type === "Hybrid") {
             // Half of the excise tax on combustion vehicles
             return 0.5 * calculateExciseTax(Purchase_Price, "Petrol", Engine_Capacity);
-        } else if (Fuel_Type === "Plug-in Hybrid" && Engine_Capacity <= 2000) {
+        } else if (Fuel_Type === "Plug-in" && Engine_Capacity <= 2000) {
             return 0;
-        } else if (Fuel_Type === "Plug-in Hybrid" && Engine_Capacity > 2000) {
+        } else if (Fuel_Type === "Plug-in" && Engine_Capacity > 2000) {
             return 0.5 * calculateExciseTax(Purchase_Price, "Petrol", Engine_Capacity);
         }
         return 0;

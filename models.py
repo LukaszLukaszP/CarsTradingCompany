@@ -11,7 +11,7 @@ class Vehicle(db.Model):
     make_id = db.Column(db.Integer, db.ForeignKey('CarMake.id'))
     model_id = db.Column(db.Integer, db.ForeignKey('CarModel.id'))
     First_Registration_Date = db.Column(db.Date)
-    Fuel_Type = db.Column(db.String(10))
+    Fuel_Type = db.Column(db.String(20))
     Engine_Capacity = db.Column(db.Integer)
     Engine_Power = db.Column(db.Integer)
     Gearbox_Type = db.Column(db.String(10))
@@ -150,6 +150,6 @@ class Purchase(db.Model):
     Purchase_Date = db.Column(db.Date)
     tax = db.Column(db.DECIMAL(5, 3))
     excise_tax = db.Column(db.DECIMAL(10, 2))
-    sales_price = db.Column(db.DECIMAL(10, 2))
+    Sale_Price = db.Column(db.DECIMAL(10, 2))
 
     vehicle = db.relationship('Vehicle', backref='purchases')
